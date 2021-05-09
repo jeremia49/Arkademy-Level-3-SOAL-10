@@ -18,7 +18,7 @@ func ControllerProduk(db *gorm.DB) *produkRepo {
 	return &produkRepo{Db: db}
 }
 
-func (repository *produkRepo) CreateProduk(c *gin.Context) {
+func (repository *produkRepo) CreateProdukJSON(c *gin.Context) {
 	var produk models.Produk
 	c.BindJSON(&produk)
 	err := models.CreateProduk(repository.Db, &produk)
@@ -52,4 +52,25 @@ func (repository *produkRepo) GetAllProduk(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, produk)
+}
+
+func CreateProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
+
+	if c.PostForm("namaproduk") == "" || c.PostForm("keterangan") == "" || c.PostForm("harga") == "" || c.PostForm("jumlah") == "" {
+		return gin.Error{}
+	}
+
+	produk := models.Produk{
+		NamaProduk: c.PostForm("namaproduk"),
+		Keterangan: c.PostForm("keterangan"),
+		Harga:      c.PostForm("harga"),
+		Jumlah:     c.PostForm("jumlah"),
+	}
+
+	err := models.CreateProduk(Db, &produk)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -17,23 +17,34 @@ func main() {
 	server.LoadHTMLGlob("templates/*")
 
 	api := server.Group("/api/")
-	userRepo := controllers.ControllerProduk(db)
-	api.POST("/produk/create", userRepo.CreateProduk)
-	api.GET("/produk", userRepo.GetAllProduk)
-	api.GET("/produk/:id", userRepo.GetProduk)
-	// api.PUT("/produk/:id", userRepo.UpdateUser)
-	// api.DELETE("/produk/:id", userRepo.DeleteUser)
+	produkRepo := controllers.ControllerProduk(db)
+	api.POST("/produk/create", produkRepo.CreateProdukJSON)
+	api.GET("/produk", produkRepo.GetAllProduk)
+	api.GET("/produk/:id", produkRepo.GetProduk)
+	// api.PUT("/produk/:id", produkRepo.UpdateUser)
+	// api.DELETE("/produk/:id", produkRepo.DeleteUser)
 
 	web := server.Group("/")
 	web.GET("/", func(c *gin.Context) {
-
 		var data []models.Produk
-
 		models.GetAllProduk(db, &data)
 		c.HTML(http.StatusOK, "index.gohtml", gin.H{
 			"title": "Home",
 			"data":  data,
 		})
+	})
+
+	web.GET("/create", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "create.gohtml", gin.H{
+			"title": "Create Produk",
+		})
+	})
+
+	web.POST("/create", func(c *gin.Context) {
+		if err := controllers.CreateProdukForm(db, c); err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+		c.Redirect(http.StatusFound, "/")
 	})
 
 	server.Run("localhost:8080")
