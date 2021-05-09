@@ -47,6 +47,19 @@ func main() {
 		c.Redirect(http.StatusFound, "/")
 	})
 
+	web.GET("/delete/:id", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "delete.gohtml", gin.H{
+			"title": "Hapus Produk",
+		})
+	})
+
+	web.POST("/delete/:id", func(c *gin.Context) {
+		if err := controllers.DeleteProdukForm(db, c); err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+		c.Redirect(http.StatusFound, "/")
+	})
+
 	server.Run("localhost:8080")
 
 }

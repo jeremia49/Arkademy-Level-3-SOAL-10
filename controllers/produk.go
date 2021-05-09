@@ -4,6 +4,7 @@ import (
 	"arkademy/models"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -71,6 +72,28 @@ func CreateProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func DeleteProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
+	id, _ := c.Params.Get("id")
+	if id == "" {
+		return gin.Error{}
+	}
+
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+
+	produk := models.Produk{
+		Model: &gorm.Model{
+			ID: uint(i),
+		},
+	}
+
+	Db.Delete(&produk)
 
 	return nil
 }

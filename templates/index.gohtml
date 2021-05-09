@@ -35,7 +35,7 @@
                         <td>{{$element.Jumlah}}</td>
 						<td>
 							<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-							<a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+							<a href="/delete/{{$element.Model.ID}}" class="delete" ><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 						</td>
 					</tr>
 
@@ -80,27 +80,6 @@
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Ga jadi">
 					<input type="submit" class="btn btn-info" value="Simpan">
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-<!-- Delete Modal HTML -->
-<div id="deleteEmployeeModal" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form>
-				<div class="modal-header">						
-					<h4 class="modal-title">Delete Employee</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">					
-					<p>Apakah anda yakin ?</p>
-					<p class="text-warning"><small>Hal ini tidak dapat dikembalikan !</small></p>
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal" value="Ga jadi">
-					<input type="submit" class="btn btn-danger" value="Hapus">
 				</div>
 			</form>
 		</div>
