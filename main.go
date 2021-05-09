@@ -19,6 +19,8 @@ type IndexPage struct {
 }
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
+
 	server := gin.Default()
 	server.LoadHTMLGlob("templates/*")
 
