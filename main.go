@@ -13,6 +13,11 @@ import (
 
 var db *gorm.DB = database.InitDb()
 
+type IndexPage struct {
+	Num    uint
+	Produk models.Produk
+}
+
 func main() {
 	server := gin.Default()
 	server.LoadHTMLGlob("templates/*")
@@ -28,10 +33,21 @@ func main() {
 	web := server.Group("/")
 	web.GET("/", func(c *gin.Context) {
 		var data []models.Produk
+
 		models.GetAllProduk(db, &data)
+
+		var ix []IndexPage
+
+		for i, el := range data {
+			ix = append(ix, IndexPage{
+				Num:    uint(i + 1),
+				Produk: el,
+			})
+		}
+
 		c.HTML(http.StatusOK, "index.gohtml", gin.H{
 			"title": "Home",
-			"data":  data,
+			"data":  ix,
 		})
 	})
 
