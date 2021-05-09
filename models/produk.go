@@ -33,3 +33,19 @@ func GetAllProduk(db *gorm.DB, Produk *[]Produk) (err error) {
 	}
 	return nil
 }
+
+func DeleteProduk(db *gorm.DB, Produk *Produk) (err error) {
+	err = db.Delete(&Produk).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateProduk(db *gorm.DB, Produk *Produk) (err error) {
+	err = db.Save(&Produk).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

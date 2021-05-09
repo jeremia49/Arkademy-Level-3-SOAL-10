@@ -4,6 +4,7 @@ import (
 	"arkademy/controllers"
 	"arkademy/database"
 	"arkademy/models"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,8 +20,8 @@ func main() {
 	api := server.Group("/api/")
 	produkRepo := controllers.ControllerProduk(db)
 	api.POST("/produk/create", produkRepo.CreateProdukJSON)
-	api.GET("/produk", produkRepo.GetAllProduk)
-	api.GET("/produk/:id", produkRepo.GetProduk)
+	api.GET("/produk", produkRepo.GetAllProdukJSON)
+	api.GET("/produk/:id", produkRepo.GetProdukJSON)
 	// api.PUT("/produk/:id", produkRepo.UpdateUser)
 	// api.DELETE("/produk/:id", produkRepo.DeleteUser)
 
@@ -57,6 +58,35 @@ func main() {
 		if err := controllers.DeleteProdukForm(db, c); err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
 		}
+		c.Redirect(http.StatusFound, "/")
+	})
+
+	web.GET("/edit/:id", func(c *gin.Context) {
+
+		produk, err := controllers.GetProduk(db, c)
+
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				c.AbortWithStatus(http.StatusNotFound)
+			}
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+
+		c.HTML(http.StatusOK, "edit.gohtml", gin.H{
+			"title": "Edit Produk",
+			"data":  produk,
+		})
+	})
+
+	web.POST("/edit/:id", func(c *gin.Context) {
+
+		if err := controllers.UpdateProduk(db, c); err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				c.AbortWithStatus(http.StatusNotFound)
+			}
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+
 		c.Redirect(http.StatusFound, "/")
 	})
 

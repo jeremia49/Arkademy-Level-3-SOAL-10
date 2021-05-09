@@ -29,7 +29,7 @@ func (repository *produkRepo) CreateProdukJSON(c *gin.Context) {
 	}
 }
 
-func (repository *produkRepo) GetProduk(c *gin.Context) {
+func (repository *produkRepo) GetProdukJSON(c *gin.Context) {
 	id, _ := c.Params.Get("id")
 	var produk models.Produk
 	err := models.GetProduk(repository.Db, &produk, id)
@@ -45,7 +45,7 @@ func (repository *produkRepo) GetProduk(c *gin.Context) {
 	c.JSON(http.StatusOK, produk)
 }
 
-func (repository *produkRepo) GetAllProduk(c *gin.Context) {
+func (repository *produkRepo) GetAllProdukJSON(c *gin.Context) {
 	var produk []models.Produk
 	err := models.GetAllProduk(repository.Db, &produk)
 	if err != nil {
@@ -55,7 +55,7 @@ func (repository *produkRepo) GetAllProduk(c *gin.Context) {
 	c.JSON(http.StatusOK, produk)
 }
 
-func CreateProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
+func CreateProdukForm(Db *gorm.DB, c *gin.Context) error {
 
 	if c.PostForm("namaproduk") == "" || c.PostForm("keterangan") == "" || c.PostForm("harga") == "" || c.PostForm("jumlah") == "" {
 		return gin.Error{}
@@ -76,11 +76,8 @@ func CreateProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
 	return nil
 }
 
-func DeleteProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
+func DeleteProdukForm(Db *gorm.DB, c *gin.Context) error {
 	id, _ := c.Params.Get("id")
-	if id == "" {
-		return gin.Error{}
-	}
 
 	i, err := strconv.Atoi(id)
 	if err != nil {
@@ -93,7 +90,54 @@ func DeleteProdukForm(Db *gorm.DB, c *gin.Context) (r error) {
 		},
 	}
 
-	Db.Delete(&produk)
+	if err = models.DeleteProduk(Db, &produk); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetProduk(Db *gorm.DB, c *gin.Context) (models.Produk, error) {
+	id, _ := c.Params.Get("id")
+
+	var produk models.Produk
+
+	err := models.GetProduk(Db, &produk, id)
+
+	if err != nil {
+		return models.Produk{}, err
+	}
+
+	return produk, nil
+}
+
+func UpdateProduk(Db *gorm.DB, c *gin.Context) error {
+
+	id, _ := c.Params.Get("id")
+
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+
+	if c.PostForm("namaproduk") == "" || c.PostForm("keterangan") == "" || c.PostForm("harga") == "" || c.PostForm("jumlah") == "" {
+		return gin.Error{}
+	}
+
+	produk := models.Produk{
+		Model: &gorm.Model{
+			ID: uint(i),
+		},
+		NamaProduk: c.PostForm("namaproduk"),
+		Keterangan: c.PostForm("keterangan"),
+		Harga:      c.PostForm("harga"),
+		Jumlah:     c.PostForm("jumlah"),
+	}
+
+	err = models.UpdateProduk(Db, &produk)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
