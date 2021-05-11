@@ -1,6 +1,6 @@
-# Arkademy-Level-3-SOAL-10
+# Gin + Gorm Simple CRUD
 
-CRUD sederhana sebagai salah satu syarat untuk mengikuti Bootcamp Arkademy 
+Simple CRUD
 
 ![Main Snapshot](https://raw.githubusercontent.com/jeremia49/Arkademy-Level-3-SOAL-10/main/images/main.png)
 
